@@ -8,6 +8,7 @@ defmodule RozenshteinEcto.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      RozenshteinEcto.Repo
       # Starts a worker by calling: RozenshteinEcto.Worker.start_link(arg)
       # {RozenshteinEcto.Worker, arg}
     ]
