@@ -13,7 +13,7 @@ defmodule E7Test do
       [sno: "S4"]
     ])
 
-    Repo.insert_all("takes", [
+    Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S1", cno: "CS113"],
       [sno: "S2", cno: "CS112"],
@@ -28,8 +28,8 @@ defmodule E7Test do
   describe "E7 - Who takes at least 2 courses?" do
     test "query", %{expected: expected} do
       query =
-        from t1 in "takes",
-          join: t2 in "takes",
+        from t1 in "take",
+          join: t2 in "take",
           on: t1.sno == t2.sno,
           where: t1.cno != t2.cno,
           select: t1.sno,

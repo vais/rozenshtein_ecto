@@ -12,7 +12,7 @@ defmodule E2Test do
       [sno: "S3", name: "Lizzie"]
     ])
 
-    Repo.insert_all("takes", [
+    Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S2", cno: "CS111"],
       [sno: "S3", cno: "CS112"]
@@ -25,9 +25,9 @@ defmodule E2Test do
     test "query", %{expected: expected} do
       query =
         from student in "students",
-          join: takes in "takes",
-          on: student.sno == takes.sno,
-          where: takes.cno == "CS112",
+          join: take in "take",
+          on: student.sno == take.sno,
+          where: take.cno == "CS112",
           select: student.name,
           order_by: student.name
 

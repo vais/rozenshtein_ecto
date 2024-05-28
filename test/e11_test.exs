@@ -13,7 +13,7 @@ defmodule E11Test do
       [sno: "S4"]
     ])
 
-    Repo.insert_all("takes", [
+    Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S1", cno: "CS113"],
       [sno: "S2", cno: "CS114"],
@@ -29,12 +29,12 @@ defmodule E11Test do
   describe "E11 - Who takes either CS112 or CS114 but not both?" do
     test "query", %{expected: expected} do
       query =
-        from t in "takes",
+        from t in "take",
           where: t.cno in ~w(CS112 CS114),
           where:
             t.sno not in subquery(
-              from t1 in "takes",
-                join: t2 in "takes",
+              from t1 in "take",
+                join: t2 in "take",
                 on: t1.sno == t2.sno,
                 where: t1.cno == "CS112",
                 where: t2.cno == "CS114",

@@ -13,7 +13,7 @@ defmodule E10Test do
       [sno: "S4"]
     ])
 
-    Repo.insert_all("takes", [
+    Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S1", cno: "CS113"],
       [sno: "S2", cno: "CS112"],
@@ -28,12 +28,12 @@ defmodule E10Test do
   describe "E10 - Who takes only CS112?" do
     test "query", %{expected: expected} do
       takes_CS112 =
-        from t in "takes",
+        from t in "take",
           where: t.cno == "CS112",
           select: t.sno
 
       takes_other_courses =
-        from t in "takes",
+        from t in "take",
           where: t.cno != "CS112",
           select: t.sno
 

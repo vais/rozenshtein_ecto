@@ -13,7 +13,7 @@ defmodule E4Test do
       [sno: "S4"]
     ])
 
-    Repo.insert_all("takes", [
+    Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S1", cno: "CS114"],
       [sno: "S2", cno: "CS111"],
@@ -27,8 +27,8 @@ defmodule E4Test do
   describe "E4 - Who takes both CS112 and CS114?" do
     test "using a self join", %{expected: expected} do
       query =
-        from t1 in "takes",
-          join: t2 in "takes",
+        from t1 in "take",
+          join: t2 in "take",
           on: t1.sno == t2.sno,
           where: t1.cno == "CS112" and t2.cno == "CS114",
           select: t1.sno

@@ -13,7 +13,7 @@ defmodule E3Test do
       [sno: "S4"]
     ])
 
-    Repo.insert_all("takes", [
+    Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S1", cno: "CS114"],
       [sno: "S2", cno: "CS111"],
@@ -27,10 +27,10 @@ defmodule E3Test do
   describe "E3 - Who takes CS112 or CS114?" do
     test "using the OR operator", %{expected: expected} do
       query =
-        from takes in "takes",
-          where: takes.cno == "CS112" or takes.cno == "CS114",
-          select: takes.sno,
-          order_by: [desc: takes.sno],
+        from take in "take",
+          where: take.cno == "CS112" or take.cno == "CS114",
+          select: take.sno,
+          order_by: [desc: take.sno],
           distinct: true
 
       assert Repo.all(query) == expected
@@ -38,10 +38,10 @@ defmodule E3Test do
 
     test "using the IN operator", %{expected: expected} do
       query =
-        from takes in "takes",
-          where: takes.cno in ["CS112", "CS114"],
-          select: takes.sno,
-          order_by: [desc: takes.sno],
+        from take in "take",
+          where: take.cno in ["CS112", "CS114"],
+          select: take.sno,
+          order_by: [desc: take.sno],
           distinct: true
 
       assert Repo.all(query) == expected
@@ -49,11 +49,11 @@ defmodule E3Test do
 
     test "using or_where query expression", %{expected: expected} do
       query =
-        from takes in "takes",
-          where: takes.cno == "CS112",
-          or_where: takes.cno == "CS114",
-          select: takes.sno,
-          order_by: [desc: takes.sno],
+        from take in "take",
+          where: take.cno == "CS112",
+          or_where: take.cno == "CS114",
+          select: take.sno,
+          order_by: [desc: take.sno],
           distinct: true
 
       assert Repo.all(query) == expected

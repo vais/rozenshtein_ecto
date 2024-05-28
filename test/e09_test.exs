@@ -13,7 +13,7 @@ defmodule E9Test do
       [sno: "S4"]
     ])
 
-    Repo.insert_all("takes", [
+    Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S1", cno: "CS113"],
       [sno: "S2", cno: "CS112"],
@@ -28,16 +28,16 @@ defmodule E9Test do
   describe "E9 - Who takes exactly 2 courses?" do
     test "query", %{expected: expected} do
       who_takes_at_least_2 =
-        from t1 in "takes",
-          join: t2 in "takes",
+        from t1 in "take",
+          join: t2 in "take",
           on: t2.sno == t1.sno,
           where: t2.cno != t1.cno
 
       who_takes_at_least_3 =
-        from t1 in "takes",
-          join: t2 in "takes",
+        from t1 in "take",
+          join: t2 in "take",
           on: t2.sno == t1.sno,
-          join: t3 in "takes",
+          join: t3 in "take",
           on: t3.sno == t1.sno,
           where: t3.cno != t1.cno,
           where: t2.cno != t1.cno,
