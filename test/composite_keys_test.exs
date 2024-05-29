@@ -57,4 +57,22 @@ defmodule CompositeKeysTest do
 
     assert Repo.all(query) == expected
   end
+
+  defmacro full_name(t) do
+    quote do: fragment("concat(?, ' ', ?)", unquote(t).fname, unquote(t).lname)
+  end
+
+  test "Who does not teach CS112?" do
+    expected = ["john smith", "mary brown"]
+
+    query =
+      from t in "teach",
+        select: full_name(t),
+        where:
+          full_name(t) not in subquery(
+            from t in "teach", where: t.cno == "CS112", select: full_name(t)
+          )
+
+    assert Repo.all(query) == expected
+  end
 end
