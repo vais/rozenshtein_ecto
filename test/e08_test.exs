@@ -26,7 +26,7 @@ defmodule E8Test do
   end
 
   describe "E8 - Who takes at most 2 courses?" do
-    test "query", %{expected: expected} do
+    test "using a Type 2 query", %{expected: expected} do
       who_takes_at_least_3 =
         from t1 in "take",
           join: t2 in "take",
@@ -43,6 +43,19 @@ defmodule E8Test do
           select: s.sno
 
       assert Repo.all(who_takes_at_most_2) == expected
+    end
+
+    test "using aggregation", %{expected: expected} do
+      query =
+        from t in "take",
+          right_join: s in "students",
+          on: s.sno == t.sno,
+          group_by: s.sno,
+          having: count() <= 2,
+          select: s.sno,
+          order_by: [desc: s.sno]
+
+      assert Repo.all(query) == expected
     end
   end
 end

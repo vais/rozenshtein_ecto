@@ -26,7 +26,7 @@ defmodule E7Test do
   end
 
   describe "E7 - Who takes at least 2 courses?" do
-    test "query", %{expected: expected} do
+    test "using a Type 1 query", %{expected: expected} do
       query =
         from t1 in "take",
           join: t2 in "take",
@@ -35,6 +35,17 @@ defmodule E7Test do
           select: t1.sno,
           distinct: true,
           order_by: [desc: t1.sno]
+
+      assert Repo.all(query) == expected
+    end
+
+    test "using aggregation", %{expected: expected} do
+      query =
+        from t in "take",
+          group_by: t.sno,
+          having: count() >= 2,
+          select: t.sno,
+          order_by: [desc: t.sno]
 
       assert Repo.all(query) == expected
     end

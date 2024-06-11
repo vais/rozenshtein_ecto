@@ -26,7 +26,7 @@ defmodule E9Test do
   end
 
   describe "E9 - Who takes exactly 2 courses?" do
-    test "query", %{expected: expected} do
+    test "using a Type 2 query", %{expected: expected} do
       who_takes_at_least_2 =
         from t1 in "take",
           join: t2 in "take",
@@ -55,6 +55,16 @@ defmodule E9Test do
           distinct: true
 
       assert Repo.all(who_takes_exactly_2) == expected
+    end
+
+    test "using aggregation", %{expected: expected} do
+      query =
+        from t in "take",
+          group_by: t.sno,
+          having: count() == 2,
+          select: t.sno
+
+      assert Repo.all(query) == expected
     end
   end
 end
