@@ -32,5 +32,15 @@ defmodule E12Test do
 
       assert Repo.all(the_youngest_students) == expected
     end
+
+    test "using aggregation", %{expected: expected} do
+      query =
+        from s in "students",
+          where: s.age == subquery(from s in "students", select: min(s.age)),
+          select: s.sno,
+          order_by: s.sno
+
+      assert Repo.all(query) == expected
+    end
   end
 end
