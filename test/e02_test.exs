@@ -33,5 +33,21 @@ defmodule E2Test do
 
       assert Repo.all(query) == expected
     end
+
+    test "type 3 query", %{expected: expected} do
+      query =
+        from s in "students",
+          as: :student,
+          where:
+            "CS112" in subquery(
+              from t in "take",
+                where: t.sno == parent_as(:student).sno,
+                select: t.cno
+            ),
+          select: s.name,
+          order_by: s.name
+
+      assert Repo.all_and_log(query) == expected
+    end
   end
 end
