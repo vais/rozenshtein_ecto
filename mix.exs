@@ -23,7 +23,8 @@ defmodule RozenshteinEcto.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.11.0"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:ecto_dbg, "~> 0.1.0"}
     ]
   end
 end

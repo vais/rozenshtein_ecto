@@ -22,7 +22,7 @@
       "    test \"\", %{open}expected: expected{close} do",
       "      query =",
       "",
-      "      assert Repo.all(query) == expected",
+      "      assert Repo.all_and_log(query) == expected",
       "    end",
       "  end",
       "end"
