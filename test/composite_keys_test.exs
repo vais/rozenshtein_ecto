@@ -37,10 +37,24 @@ defmodule CompositeKeysTest do
         on: p.fname == t.fname and p.lname == t.lname,
         where: t.cno == "CS112",
         select: fragment("concat(?, ' ', ?)", p.fname, p.lname),
-        order_by: [desc: 1],
-        distinct: true
+        order_by: [desc: 1]
 
     assert Repo.all(query) == expected
+
+    type_3_query =
+      from p in "professors",
+        as: :professor,
+        where:
+          "CS112" in subquery(
+            from t in "teach",
+              select: t.cno,
+              where:
+                t.fname == parent_as(:professor).fname and t.lname == parent_as(:professor).lname
+          ),
+        select: fragment("concat(?, ' ', ?)", p.fname, p.lname),
+        order_by: [desc: 1]
+
+    assert Repo.all_and_log(type_3_query) == expected
   end
 
   test "Which courses are taught by at least two professors?" do
