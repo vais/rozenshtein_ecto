@@ -22,7 +22,7 @@ defmodule E2Test do
   end
 
   describe "E2 - What are the names of students who take CS112" do
-    test "query", %{expected: expected} do
+    test "using a join", %{expected: expected} do
       query =
         from student in "students",
           join: take in "take",
@@ -34,7 +34,7 @@ defmodule E2Test do
       assert Repo.all(query) == expected
     end
 
-    test "type 3 query", %{expected: expected} do
+    test "using a type 3 query with the IN inter-query connector", %{expected: expected} do
       query =
         from s in "students",
           as: :student,
@@ -43,6 +43,22 @@ defmodule E2Test do
               from t in "take",
                 where: t.sno == parent_as(:student).sno,
                 select: t.cno
+            ),
+          select: s.name,
+          order_by: s.name
+
+      assert Repo.all_and_log(query) == expected
+    end
+
+    test "using a type 3 query with the EXISTS inter-query connector", %{expected: expected} do
+      query =
+        from s in "students",
+          as: :student,
+          where:
+            exists(
+              from t in "take",
+                where: t.sno == parent_as(:student).sno and t.cno == "CS112",
+                select: 1
             ),
           select: s.name,
           order_by: s.name
