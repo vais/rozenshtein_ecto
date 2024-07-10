@@ -66,5 +66,27 @@ defmodule E9Test do
 
       assert Repo.all(query) == expected
     end
+
+    test "using a type 3 query", %{expected: expected} do
+      query =
+        from t1 in "take",
+          as: :t1,
+          join: t2 in "take",
+          as: :t2,
+          on: t1.sno == t2.sno,
+          where:
+            t1.cno < t2.cno and
+              not exists(
+                from t in "take",
+                  where:
+                    t.sno == parent_as(:t1).sno and
+                      t.cno != parent_as(:t1).cno and
+                      t.cno != parent_as(:t2).cno,
+                  select: 1
+              ),
+          select: t1.sno
+
+      assert Repo.all(query) == expected
+    end
   end
 end
