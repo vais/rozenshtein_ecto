@@ -25,7 +25,7 @@ defmodule E5Test do
   end
 
   describe "E5 - Who does not take CS112?" do
-    test "query", %{expected: expected} do
+    test "using a type 2 query with NOT IN", %{expected: expected} do
       who_takes =
         from t in "take",
           where: t.cno == "CS112",
@@ -38,6 +38,22 @@ defmodule E5Test do
 
       actual = who_does_not_take |> Repo.all() |> Enum.sort()
       assert actual == expected
+    end
+
+    test "using a type 3 query with NOT EXISTS", %{expected: expected} do
+      query =
+        from s in "students",
+          as: :student,
+          where:
+            not exists(
+              from t in "take",
+                where: t.sno == parent_as(:student).sno and t.cno == "CS112",
+                select: 1
+            ),
+          select: s.sno,
+          order_by: s.sno
+
+      assert Repo.all_and_log(query) == expected
     end
   end
 end
