@@ -59,5 +59,22 @@ defmodule E18Test do
 
       assert Repo.all(query) == expected
     end
+
+    test "using a type 3 query", %{expected: expected} do
+      query =
+        from p in "professors",
+          as: :p,
+          where:
+            p.salary >
+              subquery(
+                from p in "professors",
+                  where: p.dept == parent_as(:p).dept,
+                  select: avg(p.salary)
+              ),
+          select: [p.fname, p.lname],
+          order_by: [p.fname, p.lname]
+
+      assert Repo.all_and_log(query) == expected
+    end
   end
 end
