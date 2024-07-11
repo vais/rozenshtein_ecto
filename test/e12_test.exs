@@ -42,5 +42,21 @@ defmodule E12Test do
 
       assert Repo.all(query) == expected
     end
+
+    test "using a type 3 query", %{expected: expected} do
+      query =
+        from s in "students",
+          as: :s,
+          where:
+            not exists(
+              from s in "students",
+                where: s.age < parent_as(:s).age,
+                select: 1
+            ),
+          select: s.sno,
+          order_by: s.sno
+
+      assert Repo.all_and_log(query) == expected
+    end
   end
 end
