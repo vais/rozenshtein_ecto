@@ -13,6 +13,13 @@ defmodule E13Test do
       [sno: "S4"]
     ])
 
+    Repo.insert_all("courses", [
+      [cno: "CS111"],
+      [cno: "CS112"],
+      [cno: "CS113"],
+      [cno: "CS114"]
+    ])
+
     Repo.insert_all("take", [
       [sno: "S1", cno: "CS112"],
       [sno: "S2", cno: "CS111"],
@@ -65,6 +72,33 @@ defmodule E13Test do
         from s in "students",
           where: s.sno not in subquery(students_for_whom_there_are_courses_they_dont_take),
           select: s.sno
+
+      assert Repo.all(query) == expected
+    end
+
+    test "using a type 3 query", %{expected: expected} do
+      # In other words: for which students
+      # does there not exist a course
+      # that they do not take?
+
+      query =
+        from s in "students",
+          as: :student,
+          select: s.sno,
+          where:
+            not exists(
+              from c in "courses",
+                as: :course,
+                select: 1,
+                where:
+                  not exists(
+                    from t in "take",
+                      select: 1,
+                      where:
+                        t.sno == parent_as(:student).sno and
+                          t.cno == parent_as(:course).cno
+                  )
+            )
 
       assert Repo.all(query) == expected
     end
